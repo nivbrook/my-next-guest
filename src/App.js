@@ -15,11 +15,10 @@ function App() {
   const [guess, setGuess] = useState("");
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [answeredCorrectly, setAnsweredCorrectly] = useState(false);
-  const [message, setMessage] = useState("");
-  
+
   // Dark mode state
   const [darkMode, setDarkMode] = useState(false);
-  
+
   const videoRef = useRef(null);
   const activeInputRef = useRef(null);
 
@@ -31,7 +30,6 @@ function App() {
     setGuess("");
     setIncorrectAnswers([]);
     setAnsweredCorrectly(false);
-    setMessage("");
   }, [currentGame]);
 
   const handleGameTabClick = (game) => {
@@ -42,8 +40,6 @@ function App() {
     if (clip < 5) {
       setClip(prevClip => prevClip + 1);
       setGuess("");
-    } else {
-      setMessage("Game Over: You've seen all the clues. You lost.");
     }
   };
 
@@ -55,16 +51,12 @@ function App() {
         setClip(prevClip => prevClip + 1);
       }
       setAnsweredCorrectly(true);
-      setMessage("");
     } else {
       // Update the wrong guesses array.
       setIncorrectAnswers(prev => [...prev, guess]);
       // Use (incorrectAnswers.length + 1) to account for the new guess.
       if (clip < 5 && (incorrectAnswers.length + 1) <= 4) {
         handleNextClip();
-        setMessage("");
-      } else {
-        setMessage("Game Over: You've seen all the clues. You lost.");
       }
       setGuess("");
     }
@@ -99,60 +91,85 @@ function App() {
     );
   }
 
-  // Render 4 guess input fields vertically. Only the active field is enabled.
-  function renderGuessFields() {
-    return [0, 1, 2, 3].map(i => {
-      let value = "";
-      let onChange = undefined;
-      let isActive = false;
-      // For submitted incorrect guesses.
-      if (i < incorrectAnswers.length) {
-        value = incorrectAnswers[i];
-      }
-      // Active field: next guess slot.
-      if (
-        i === incorrectAnswers.length &&
-        !answeredCorrectly &&
-        clip < 5 &&
-        incorrectAnswers.length < 4
-      ) {
-        value = guess;
-        onChange = (e) => setGuess(e.target.value);
-        isActive = true;
-      }
-      // When answer is correct, show the correct answer in the active field.
-      if (answeredCorrectly && i === incorrectAnswers.length) {
-        value = meta.answer;
-      }
-      // Define the style.
-      let inputStyle = { marginBottom: "10px", display: "block", width: "100%" };
-      // Use alternate colors for dark mode
-      if (i < incorrectAnswers.length) {
-        inputStyle.border = "2px solid " + (darkMode ? "#f88" : "red");
-        inputStyle.backgroundColor = darkMode ? "#662323" : "#ffcccc";
-      } else if (answeredCorrectly && i === incorrectAnswers.length) {
-        inputStyle.border = "2px solid " + (darkMode ? "#8f8" : "green");
-        inputStyle.backgroundColor = darkMode ? "#223622" : "#ccffcc";
-      }
+  // Render guess section
+  function renderGuessSection() {
+    // A common container style – 640px wide and centered.
+    const containerStyle = { width: "400", margin: "0 auto 20px" };
+
+    if (answeredCorrectly) {
       return (
-        <input
-          key={i}
-          type="text"
-          value={value}
-          onChange={onChange}
-          disabled={!isActive}
-          style={inputStyle}
-          ref={isActive ? activeInputRef : null}
-        />
+        <div style={containerStyle}>
+          <form>
+          <input
+            type="text"
+            value={meta.answer}
+            disabled
+            style={{
+              padding: "8px",
+              fontSize: "1rem",
+              border: "2px solid " + (darkMode ? "#8f8" : "green"),
+              backgroundColor: darkMode ? "#223622" : "#ccffcc",
+              width: "100%"
+            }}
+          />
+          {incorrectAnswers.map((g, idx) => {
+            const inputStyle = {
+              padding: "8px",
+              fontSize: "1rem",
+              border: "2px solid " + (darkMode ? "#f88" : "red"),
+              backgroundColor: darkMode ? "#662323" : "#ffcccc",
+              width: "100%"
+            };
+            return (
+              <input key={idx} type="text" value={g} disabled style={inputStyle} />
+            );
+          })}
+          </form>
+        </div>
       );
-    });
+    }
+
+    return (
+      <div style={containerStyle}>
+        {/* The active input is inside a form so pressing Enter submits */}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={guess}
+            onChange={(e) => setGuess(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") { handleSubmit(e); } }}
+            style={{
+              width: "100%",
+              padding: "8px",
+              fontSize: "1rem",
+              border: "2px solid #ccc",
+              borderRadius: "4px"
+            }}
+            ref={activeInputRef}
+          />
+          {incorrectAnswers.map((g, idx) => {
+            const inputStyle = {
+              padding: "8px",
+              fontSize: "1rem",
+              border: "2px solid " + (darkMode ? "#f88" : "red"),
+              backgroundColor: darkMode ? "#662323" : "#ffcccc",
+              width: "100%"
+            };
+            return (
+              <input key={idx} type="text" value={g} disabled style={inputStyle} />
+            );
+          })}
+
+        </form>
+      </div>
+    );
   }
 
   return (
     <div className={darkMode ? "App dark" : "App"}>
       {/* Dark Mode Toggle in Top Right */}
-      <button 
-        className="dark-mode-toggle" 
+      <button
+        className="dark-mode-toggle"
         onClick={() => setDarkMode(!darkMode)}
       >
         {darkMode ? "Light Mode" : "Dark Mode"}
@@ -194,32 +211,21 @@ function App() {
             ref={videoRef}
             key={clip}
             autoPlay
-            onEnded={handleVideoEnded}
             width="640"
-            height="360"
+            onEnded={handleVideoEnded}
             src={`${process.env.PUBLIC_URL}/clips/${currentGame}/${clip}.mp4`}
           >
             Your browser does not support the video tag.
           </video>
           <br />
-          <h2>Guess the guest...</h2>
+          {/* Instead of a heading, we show the active guess area */}
           <div className="guess-fields">
-            {(!answeredCorrectly && clip < 5 && incorrectAnswers.length < 4) ? (
-              <form onSubmit={handleSubmit}>
-                {renderGuessFields()}
-                <button type="submit">Submit Guess</button>
-              </form>
-            ) : (
-              <>
-                {renderGuessFields()}
-              </>
+            {renderGuessSection()}
+            {answeredCorrectly && <p>Congratulations, you got it right!</p>}
+            {(!answeredCorrectly && clip === 5) && (
+              <p>Game Over: You lost.</p>
             )}
           </div>
-          {answeredCorrectly && <p>Congratulations, you got it right!</p>}
-          {message && <p>{message}</p>}
-          {(!answeredCorrectly && clip === 5) && (
-            <p>Game Over: You lost.</p>
-          )}
         </>
       )}
     </div>
