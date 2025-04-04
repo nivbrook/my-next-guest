@@ -16,6 +16,10 @@ function App() {
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [answeredCorrectly, setAnsweredCorrectly] = useState(false);
   const [message, setMessage] = useState("");
+  
+  // Dark mode state
+  const [darkMode, setDarkMode] = useState(false);
+  
   const videoRef = useRef(null);
   const activeInputRef = useRef(null);
 
@@ -122,12 +126,13 @@ function App() {
       }
       // Define the style.
       let inputStyle = { marginBottom: "10px", display: "block", width: "100%" };
+      // Use alternate colors for dark mode
       if (i < incorrectAnswers.length) {
-        inputStyle.border = "2px solid red";
-        inputStyle.backgroundColor = "#ffcccc";
+        inputStyle.border = "2px solid " + (darkMode ? "#f88" : "red");
+        inputStyle.backgroundColor = darkMode ? "#662323" : "#ffcccc";
       } else if (answeredCorrectly && i === incorrectAnswers.length) {
-        inputStyle.border = "2px solid green";
-        inputStyle.backgroundColor = "#ccffcc";
+        inputStyle.border = "2px solid " + (darkMode ? "#8f8" : "green");
+        inputStyle.backgroundColor = darkMode ? "#223622" : "#ccffcc";
       }
       return (
         <input
@@ -144,7 +149,14 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className={darkMode ? "App dark" : "App"}>
+      {/* Dark Mode Toggle in Top Right */}
+      <button 
+        className="dark-mode-toggle" 
+        onClick={() => setDarkMode(!darkMode)}
+      >
+        {darkMode ? "Light Mode" : "Dark Mode"}
+      </button>
       {/* Global Title */}
       <h1 className="title">My Next Guest</h1>
       {/* Game selection tabs */}
@@ -162,10 +174,9 @@ function App() {
           </button>
         ))}
       </div>
-      {/* Display metadata show and date */}
+      {/* Display metadata show and date without labels */}
       <div className="game-info">
-        <p><strong>Show:</strong> {meta.show}</p>
-        <p><strong>Date:</strong> {meta.date}</p>
+        <p className="show">{meta.show} - {meta.date}</p>
       </div>
       {/* Start Game Screen */}
       {!gameStarted && (
@@ -184,7 +195,7 @@ function App() {
             width="640"
             height="360"
             src={`${process.env.PUBLIC_URL}/clips/${currentGame}/${clip}.mp4`}
-            >
+          >
             Your browser does not support the video tag.
           </video>
           <br />
@@ -204,7 +215,7 @@ function App() {
           {answeredCorrectly && <p>Congratulations, you got it right!</p>}
           {message && <p>{message}</p>}
           {(!answeredCorrectly && clip === 5) && (
-            <p>Game Over: You've seen all the clues. You lost.</p>
+            <p>Game Over: You lost.</p>
           )}
         </>
       )}

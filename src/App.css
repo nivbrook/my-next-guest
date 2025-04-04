@@ -1,13 +1,83 @@
+/* Light Mode (default) */
+:root {
+  --bg-color: #f0f0f0; /* light grey */
+  --txt-color: #333333;
+  --accent-color: #0077cc;
+  --input-bg: #f9f9f9;
+  --border-color: #cccccc;
+}
+
+/* Dark Mode */
+.dark {
+  --bg-color: #121212;
+  --txt-color: #e0e0e0;
+  --accent-color: #66aaff;
+  --input-bg: #1d1d1d;
+  --border-color: #444444;
+}
+
+/* Global styles make use of these variables */
+body, .App {
+  background-color: var(--bg-color);
+  color: var(--txt-color);
+  font-family: sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+button {
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: darken(var(--accent-color), 10%);
+}
+
+.game-tabs button {
+  background-color: transparent;
+  color: var(--txt-color);
+  border: 1px solid var(--border-color);
+}
+
+/* Style input fields using variables */
+.guess-fields input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--txt-color);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+/* Make sure html and body fill the viewport */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+}
+
+/* Option 1: Remove/adjust the max-width on .App so it fills more of the window */
 .App {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-    background: #f0f0f5;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  /* Either remove max-width:600px to let it fill the width */
+  max-width: 100%;
+  padding: 20px;
+  text-align: center;
 }
 
 .App-logo {
@@ -52,22 +122,6 @@ video {
     max-width: 100%;
 }
 
-button {
-    background: #007acc;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-button:hover {
-    background: #005ea6;
-}
-
 input[type="text"] {
     padding: 10px;
     border: 1px solid #ccc;
@@ -83,4 +137,55 @@ form {
 p {
     margin-top: 20px;
     font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Center the game tabs and info */
+.game-tabs, .game-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Clean and simple style for show and date */
+.game-info p {
+  font-size: 1.2rem;
+  margin: 5px 0;
+  color: var(--txt-color);
+}
+
+/* Center the guess fields container and adjust input sizes */
+.guess-fields {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Optionally constrain input widths and center text inside them */
+.guess-fields input {
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Center the Submit button */
+.guess-fields form button {
+  margin-top: 15px;
+}
+
+/* Dark mode toggle button positioned at top right */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 999;
+  transition: background-color 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+  background-color: darken(var(--accent-color), 10%);
 }
