@@ -93,7 +93,7 @@ function App() {
 
   // Render guess section
   function renderGuessSection() {
-    // A common container style – 640px wide and centered.
+    // A common container style – 400px wide and centered.
     const containerStyle = { width: "400", margin: "0 auto 20px" };
 
     if (answeredCorrectly) {
@@ -138,6 +138,7 @@ function App() {
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { handleSubmit(e); } }}
+            placeholder="Guess the Guest"
             style={{
               width: "100%",
               padding: "8px",
