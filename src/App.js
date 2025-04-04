@@ -188,6 +188,8 @@ function App() {
       {gameStarted && (
         <>
           <video
+            playsInline
+            webkit-playsinline="true"
             ref={videoRef}
             key={clip}
             autoPlay
