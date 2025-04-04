@@ -53,8 +53,10 @@ function App() {
       setAnsweredCorrectly(true);
       setMessage("");
     } else {
+      // Update the wrong guesses array.
       setIncorrectAnswers(prev => [...prev, guess]);
-      if (clip < 5 && incorrectAnswers.length < 3) {
+      // Use (incorrectAnswers.length + 1) to account for the new guess.
+      if (clip < 5 && (incorrectAnswers.length + 1) <= 4) {
         handleNextClip();
         setMessage("");
       } else {
