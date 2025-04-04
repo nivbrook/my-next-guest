@@ -181,8 +181,8 @@ function App() {
             onEnded={handleVideoEnded}
             width="640"
             height="360"
-            src={`/clips/${currentGame}/${clip}.mp4`}
-          >
+            src={`${process.env.PUBLIC_URL}/clips/${currentGame}/${clip}.mp4`}
+            >
             Your browser does not support the video tag.
           </video>
           <br />
