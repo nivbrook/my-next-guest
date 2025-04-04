@@ -190,6 +190,7 @@ function App() {
           <video
             playsInline
             webkit-playsinline="true"
+            controls={false}
             ref={videoRef}
             key={clip}
             autoPlay
