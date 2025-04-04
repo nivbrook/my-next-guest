@@ -1,0 +1,17 @@
+{
+  "game1": {
+    "answer": "Anjelica Huston",
+    "show": "The Late Late Show with Craig Ferguson",
+    "date": "11/22/13"
+  },
+  "game2": {
+    "answer": "Howard Stern",
+    "show": "The Late Show with David Letterman",
+    "date": "11/22/13"
+  },
+  "game3": {
+    "answer": "Ice Cube",
+    "show": "Late Night with Conan O'Brien",
+    "date": "01/19/05"
+  }
+}
