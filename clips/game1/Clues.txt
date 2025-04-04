@@ -1,0 +1,6 @@
+Clue 1 - play video 1
+Clue 2 - play video 2
+Clue 3 - play video 3
+Clue 4 - play video 4
+Clue 5 - broadcast date: 11/22/13
+
