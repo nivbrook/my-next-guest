@@ -85,7 +85,8 @@ function App() {
   }, [gameStarted, incorrectAnswers, guess]);
 
   const copyResults = () => {
-    const homepage = process.env.PUBLIC_URL || 'https://your-game-url.com';
+    // Create a full homepage URL by concatenating the origin with PUBLIC_URL.
+    const homepage = window.location.origin + (process.env.PUBLIC_URL || '');
     const totalGuesses = answeredCorrectly ? incorrectAnswers.length + 1 : incorrectAnswers.length;
     let emojiString = '';
     for (let i = 0; i < totalGuesses; i++) {
