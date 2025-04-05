@@ -42,10 +42,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Build your app (if you're using a build script; adjust as needed)
-      - name: Build app
+      - name: Build the app
         run: npm run build
 
-      # Deploy to GitHub Pages (this uses the gh-pages package - adjust as needed)
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+
       - name: Deploy to GitHub Pages
-        run: npm run deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx gh-pages -d build --repo=https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
