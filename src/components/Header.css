@@ -9,7 +9,6 @@
 
 /* You can leave dark-mode-toggle styling here or keep it in App.css if you prefer */
 .dark-mode-toggle {
-  position: fixed;
   top: 20px;
   right: 20px;
   padding: 8px 12px;
