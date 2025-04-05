@@ -84,6 +84,55 @@ function App() {
     }
   }, [gameStarted, incorrectAnswers, guess]);
 
+  const copyResults = () => {
+    const homepage = process.env.PUBLIC_URL || 'https://your-game-url.com';
+    const totalGuesses = answeredCorrectly ? incorrectAnswers.length + 1 : incorrectAnswers.length;
+    let emojiString = '';
+    for (let i = 0; i < totalGuesses; i++) {
+      emojiString += (answeredCorrectly && i === totalGuesses - 1) ? '🟩' : '🟥';
+    }
+    const shareText = `My Next Guest\n${meta.show} (${meta.date})\n${emojiString}\n${homepage}`;
+    
+    // Use Clipboard API if available.
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareText)
+        .then(() => alert("Results copied to clipboard!"))
+        .catch(err => {
+          // Fallback to execCommand if Clipboard API fails.
+          fallbackCopyTextToClipboard(shareText);
+        });
+    } else {
+      fallbackCopyTextToClipboard(shareText);
+    }
+  };
+
+  // Fallback function using execCommand.
+  const fallbackCopyTextToClipboard = (text) => {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    // Avoid scrolling to bottom.
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.width = "2em";
+    textArea.style.height = "2em";
+    textArea.style.padding = "0";
+    textArea.style.border = "none";
+    textArea.style.outline = "none";
+    textArea.style.boxShadow = "none";
+    textArea.style.background = "transparent";
+    document.body.appendChild(textArea);
+    textArea.select();
+    
+    try {
+      const successful = document.execCommand('copy');
+      alert(successful ? "Results copied to clipboard!" : "Failed to copy results.");
+    } catch (err) {
+      alert("Failed to copy results.");
+    }
+    document.body.removeChild(textArea);
+  };
+
   if (!meta) {
     return (
       <div className="App">
@@ -95,24 +144,24 @@ function App() {
 
   return (
     <div className={darkMode ? "App dark" : "App"}>
-      <Header 
-        darkMode={darkMode} 
-        setDarkMode={setDarkMode} 
-        games={games} 
-        currentGame={currentGame} 
-        handleGameTabClick={handleGameTabClick} 
-        meta={meta} 
+      <Header
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        games={games}
+        currentGame={currentGame}
+        handleGameTabClick={handleGameTabClick}
+        meta={meta}
       />
 
       {!gameStarted ? (
         <StartScreen onStart={() => setGameStarted(true)} />
       ) : (
         <>
-          <VideoPlayer 
-            videoRef={videoRef} 
-            clip={clip} 
-            currentGame={currentGame} 
-            handleVideoEnded={handleVideoEnded} 
+          <VideoPlayer
+            videoRef={videoRef}
+            clip={clip}
+            currentGame={currentGame}
+            handleVideoEnded={handleVideoEnded}
           />
           <br />
           <div className="guess-fields">
@@ -127,8 +176,18 @@ function App() {
               clip={clip}
               handleGuessChange={setGuess}
             />
-            {answeredCorrectly && <p>Congratulations, you got it right!</p>}
-            {(!answeredCorrectly && clip === 5) && <p>Game Over: You lost.</p>}
+            {answeredCorrectly && (
+              <p>
+                Congratulations, you got it right!{" "}
+                <button className="share-button" onClick={copyResults}>Share</button>
+              </p>
+            )}
+            {(!answeredCorrectly && clip === 5) && (
+              <p>
+                Game Over: You lost.{" "}
+                <button className="share-button" onClick={copyResults}>Share</button>
+              </p>
+            )}
           </div>
         </>
       )}
