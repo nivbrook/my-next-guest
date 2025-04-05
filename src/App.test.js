@@ -8,7 +8,76 @@ HTMLMediaElement.prototype.play = jest.fn(() => Promise.resolve());
 
 describe('App Integration Tests', () => {
   beforeEach(() => {
+    localStorage.clear();
     render(<App />);
+  });
+
+  test('toggles dark mode and persists preference', async () => {
+    // Find the dark mode toggle button.
+    const darkToggle = screen.getByRole('button', { name: /dark mode/i });
+    expect(darkToggle).toBeInTheDocument();
+
+    // Click to toggle dark mode.
+    fireEvent.click(darkToggle);
+    await waitFor(() => {
+      // Check that the App container has "dark" class.
+      expect(document.querySelector('.App')).toHaveClass('dark');
+    });
+
+    // Verify that localStorage has been updated.
+    expect(localStorage.getItem('darkMode')).toBe('true');
+
+    // Toggle back.
+    fireEvent.click(darkToggle);
+    await waitFor(() => {
+      expect(document.querySelector('.App')).not.toHaveClass('dark');
+    });
+    expect(localStorage.getItem('darkMode')).toBe('false');
+  });
+
+  test('resets game state when switching currentGame', async () => {
+    // Start the game and simulate some incorrect guesses.
+    fireEvent.click(screen.getByText(/Start Game/i));
+    let activeInput = await screen.findByPlaceholderText(/Guess the Guest/i);
+    fireEvent.change(activeInput, { target: { value: 'wrong guess' } });
+    fireEvent.keyDown(activeInput, { key: 'Enter', code: 'Enter', charCode: 13 });
+    
+    await waitFor(() => {
+      // After a wrong guess, check that the input is cleared.
+      expect(activeInput).toHaveValue('');
+    });
+    
+    // Change the game via the Header tabs.
+    const newGameTab = screen.getByText(/GAME2/i);
+    fireEvent.click(newGameTab);
+
+    // Wait for state reset (gameStarted should be false and clip reset to 1).
+    await waitFor(() => {
+      // The start screen should re-appear.
+      expect(screen.getByText(/Start Game/i)).toBeInTheDocument();
+    });
+
+    // Also, local states like guess and incorrectAnswers should be cleared.
+    // (Additional selectors/assertions can be added if these are rendered.)
+  });
+
+  test('plays video when answered correctly', async () => {
+    fireEvent.click(screen.getByText(/Start Game/i));
+    const answer = gameData['game1'].answer;
+    const activeInput = await screen.findByPlaceholderText(/Guess the Guest/i);
+    
+    fireEvent.change(activeInput, { target: { value: answer } });
+    fireEvent.keyDown(activeInput, { key: 'Enter', code: 'Enter', charCode: 13 });
+    
+    // Wait for winning state.
+    await waitFor(() => {
+      const winInput = screen.getByDisplayValue(answer);
+      expect(winInput).toBeDisabled();
+      expect(screen.getByText(/Congratulations, you got it right!/i)).toBeInTheDocument();
+    });
+    
+    // Verify videoRef.play was called.
+    expect(HTMLMediaElement.prototype.play).toHaveBeenCalled();
   });
 
   test('shows loading message if meta is not available (simulate by temporarily clearing meta)', () => {
