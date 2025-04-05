@@ -1,17 +1,35 @@
-name: Deploy to GitHub Pages
+name: CI & Deploy
 
 on:
   push:
     branches:
       - main
-
-permissions:
-  contents: write
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
-    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test -- --watchAll=false
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && success()
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -24,15 +42,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build the app
+      # Build your app (if you're using a build script; adjust as needed)
+      - name: Build app
         run: npm run build
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "github-actions"
-
+      # Deploy to GitHub Pages (this uses the gh-pages package - adjust as needed)
       - name: Deploy to GitHub Pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx gh-pages -d build --repo=https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        run: npm run deploy
