@@ -20,7 +20,7 @@ function GuessSection({
             type="text"
             value={meta.answer}
             disabled
-            className={darkMode ? "guess-correct-dark" : "guess-correct"}
+            className={"guess-correct"}
           />
         ) : (
           clip !== 5 && (
