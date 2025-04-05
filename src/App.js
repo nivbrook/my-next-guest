@@ -53,7 +53,7 @@ function App() {
       setAnsweredCorrectly(true);
     } else {
       // Update the wrong guesses array.
-      setIncorrectAnswers(prev => [...prev, guess]);
+      setIncorrectAnswers(prev => [guess, ...prev]);
       // Use (incorrectAnswers.length + 1) to account for the new guess.
       if (clip < 5 && (incorrectAnswers.length + 1) <= 4) {
         handleNextClip();
@@ -133,6 +133,7 @@ function App() {
       <div style={containerStyle}>
         {/* The active input is inside a form so pressing Enter submits */}
         <form onSubmit={handleSubmit}>
+          {clip !== 5 && 
           <input
             type="text"
             value={guess}
@@ -147,7 +148,7 @@ function App() {
               borderRadius: "4px"
             }}
             ref={activeInputRef}
-          />
+          />}
           {incorrectAnswers.map((g, idx) => {
             const inputStyle = {
               padding: "8px",
