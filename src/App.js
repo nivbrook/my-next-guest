@@ -84,6 +84,20 @@ function App() {
     }
   }, [gameStarted, incorrectAnswers, guess]);
 
+  useEffect(() => {
+    if (gameStarted) {
+      // Preload clips 1 through 5.
+      for (let i = 1; i <= 5; i++) {
+        const video = document.createElement('video');
+        video.src = `${process.env.PUBLIC_URL}/clips/${currentGame}/${i}.mp4`;
+        video.preload = 'auto';
+        // Optionally, you can attach it to a hidden element:
+        video.style.display = 'none';
+        document.body.appendChild(video);
+      }
+    }
+  }, [gameStarted, currentGame]);
+
   const copyResults = () => {
     // Create a full homepage URL by concatenating the origin with PUBLIC_URL.
     const homepage = window.location.origin + (process.env.PUBLIC_URL || '');
