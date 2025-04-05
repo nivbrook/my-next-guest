@@ -15,7 +15,10 @@ function App() {
   const [guess, setGuess] = useState("");
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [answeredCorrectly, setAnsweredCorrectly] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  // Initialize darkMode from localStorage; default false if not set.
+  const [darkMode, setDarkMode] = useState(
+    () => JSON.parse(localStorage.getItem('darkMode')) || false
+  );
 
   const videoRef = useRef(null);
   const activeInputRef = useRef(null);
@@ -28,6 +31,11 @@ function App() {
     setIncorrectAnswers([]);
     setAnsweredCorrectly(false);
   }, [currentGame]);
+
+  // Persist darkMode changes to localStorage.
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+  }, [darkMode]);
 
   const handleGameTabClick = (game) => {
     setCurrentGame(game);
