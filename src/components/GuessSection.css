@@ -1,0 +1,43 @@
+.guess-container {
+  width: 400px;
+  margin: 0 auto 20px;
+}
+
+.guess-container input {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Default (light mode) active input */
+.guess-active {
+  background-color: #fff;
+  border: 2px solid #ccc;
+}
+
+/* Light mode wrong and correct inputs */
+.guess-wrong {
+  background-color: #ffcccc !important;
+  border: 2px solid red !important;
+  color: #000;
+}
+
+.guess-correct {
+  background-color: #ccffcc !important;
+  border: 2px solid green !important;
+}
+
+/* Dark mode overrides using a global .dark class */
+.dark .guess-wrong {
+  background-color: #330000 !important;
+  border: 2px solid darkred !important;
+  color: #fff !important;
+}
+
+.dark .guess-correct {
+  background-color: #223622 !important;
+  border: 2px solid #8f8 !important;
+}

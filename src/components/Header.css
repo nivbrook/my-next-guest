@@ -1,0 +1,29 @@
+.header {
+  padding: 20px;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+}
+
+/* You can leave dark-mode-toggle styling here or keep it in App.css if you prefer */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 999;
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+  /* Note: since your App.css uses a function “darken()” which isn’t standard CSS,
+     you may define an alternate hover color manually here */
+  background-color: #005fa3; /* adjust as needed */
+}

@@ -1,0 +1,10 @@
+.game-info {
+  margin: 10px 0;
+}
+
+.game-info .show {
+  font-size: 1.2rem;
+  margin: 5px 0;
+  text-align: center;
+  color: var(--txt-color);
+}

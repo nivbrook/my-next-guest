@@ -1,0 +1,19 @@
+.start-screen {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.start-screen button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.start-screen button:hover {
+  background-color: #005fa3;
+}
